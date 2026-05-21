@@ -13,7 +13,7 @@ help:
 
 install:
 	cd backend && uv sync
-	cd frontend && npm install --legacy-peer-deps
+	cd frontend && npm install
 
 db:
 	docker compose up -d postgres

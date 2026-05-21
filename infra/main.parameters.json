@@ -6,7 +6,7 @@
             "value": "${AZURE_ENV_NAME}"
         },
         "location": {
-            "value": "${AZURE_LOCATION=eastus2}"
+            "value": "${AZURE_LOCATION}"
         },
         "backendContainerImage": {
             "value": "${SERVICE_API_IMAGE_NAME}"
@@ -18,10 +18,13 @@
             "value": "shadcn-fastapi"
         },
         "azureOpenAIDeploymentName": {
-            "value": "${AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o}"
+            "value": "${AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5.3-chat}"
         },
         "azureOpenAIApiVersion": {
-            "value": "${AZURE_OPENAI_API_VERSION=2025-04-01-preview}"
+            "value": "${AZURE_OPENAI_API_VERSION=preview}"
+        },
+        "azureOpenAIDeploymentsApiVersion": {
+            "value": "${AZURE_OPENAI_DEPLOYMENTS_API_VERSION=2024-10-21}"
         },
         "azureOpenAIEmbeddingModel": {
             "value": "${AZURE_OPENAI_EMBEDDING_MODEL=text-embedding-3-large}"

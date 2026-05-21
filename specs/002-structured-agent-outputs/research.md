@@ -12,7 +12,7 @@
 **Source**: [Microsoft Agent Framework - Producing Structured Output with Agents](https://learn.microsoft.com/en-us/agent-framework/tutorials/agents/structured-output?pivots=programming-language-python)
 
 **Findings**:
-- The `ChatAgent` supports structured output when used with compatible chat clients (Azure OpenAI)
+- The `Agent` supports structured output when used with compatible chat clients (Azure OpenAI)
 - Pass a Pydantic model to the `response_format` parameter when calling `agent.run()`
 - The structured output is available in `response.value` as a **Pydantic model instance** (not JSON string)
 - No need to manually parse JSON - the framework handles deserialization automatically
@@ -73,9 +73,9 @@ if response.value:
 **Task**: How to pass structured output config to existing agent factories
 
 **Findings**:
-- Current agent factories (`create_*_agent()`) return a `ChatAgent` instance
+- Current agent factories (`create_*_agent()`) return an `Agent` instance
 - Options can be passed either:
-  1. As `default_options` in `ChatAgent.__init__()` (applies to all runs)
+  1. As `default_options` in `Agent.__init__()` (applies to all runs)
   2. As `options` in `agent.run()` (per-invocation override)
 - For consistent structured output, `default_options` is cleaner
 

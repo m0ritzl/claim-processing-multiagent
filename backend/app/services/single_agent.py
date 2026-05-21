@@ -1,4 +1,4 @@
-"""Service helper to run a single ChatAgent from the Microsoft Agent Framework.
+"""Service helper to run a single Agent from the Microsoft Agent Framework.
 
 This mirrors the existing ``services.claim_processing`` layer but targets
 one specialist agent instead of the supervisor.  The compiled agents are

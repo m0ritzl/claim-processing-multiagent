@@ -107,21 +107,21 @@ print(result)
 
 If you see `pydantic.ValidationError`, the LLM produced output not matching the schema. This is rare with structured outputs but can happen if:
 - The prompt conflicts with the schema
-- The model doesn't support structured outputs (requires GPT-4o or newer)
+- The model doesn't support structured outputs (requires a structured-output-capable Azure OpenAI chat model)
 
 **Solution**: Check that the prompt instructions align with the expected output fields.
 
 ### Missing `response_format` Support
 
 If the agent framework doesn't apply the schema, ensure:
-1. Using `default_options` in `ChatAgent.__init__()`, not just runtime options
-2. The `AzureOpenAIChatOptions` import is from `agent_framework.azure`
+1. Using `default_options` in `Agent.__init__()`, not just runtime options
+2. The Azure OpenAI client is configured with `OpenAIChatClient`
 
 ## Architecture Notes
 
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│  Supervisor     │────▶│    ChatAgent     │────▶│  LLM (GPT-4o)   │
+│  Supervisor     │────▶│      Agent       │────▶│ gpt-5.3-chat    │
 │  .run(task,     │     │                  │     │ + JSON Schema   │
 │   response_fmt) │     └──────────────────┘     └─────────────────┘
 └─────────────────┘                                      │

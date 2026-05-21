@@ -79,7 +79,7 @@ As a claims processor using the frontend, I want to see the real-time progress o
 - **FR-001**: System MUST replace LangGraph/LangGraph-Supervisor orchestration with Microsoft Agent Framework without changing external API contracts.
 - **FR-002**: System MUST preserve all four specialist agents (Claim Assessor, Policy Checker, Risk Analyst, Communication Agent) with identical prompts and tool bindings.
 - **FR-003**: System MUST maintain the supervisor pattern that coordinates agent execution in the established order: Claim Assessor → Policy Checker → Risk Analyst → Communication Agent (conditional).
-- **FR-004**: System MUST continue to use Azure OpenAI as the LLM provider with the same configuration (endpoint, deployment, API key).
+- **FR-004**: System MUST continue to use Azure OpenAI as the LLM provider with the same configuration pattern (endpoint, deployment, and Microsoft Entra ID credential flow).
 - **FR-005**: All existing tools (`get_vehicle_details`, `analyze_image`, `get_policy_details`, `search_policy_documents`, `get_claimant_history`) MUST remain functional with the new orchestration layer.
 - **FR-006**: System MUST support streaming workflow updates to enable real-time frontend visualization.
 - **FR-007**: System MUST maintain backward compatibility with the existing FastAPI endpoints (`/api/v1/workflow/run`, `/api/v1/agent/{agent_name}/run`).

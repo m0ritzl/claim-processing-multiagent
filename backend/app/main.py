@@ -28,11 +28,6 @@ default_dev_origins = [
     "http://127.0.0.1:3001",
 ]
 
-# Azure Container Apps production origins
-azure_origins = [
-    "https://frontend-gqxcjz.redflower-818d79c8.eastus2.azurecontainerapps.io",
-]
-
 # Determine CORS configuration
 if frontend_origin:
     allow_origins = [frontend_origin]
@@ -45,10 +40,9 @@ elif os.getenv("ALLOW_ALL_CORS", "false").lower() == "true":
     allow_origin_regex = None
     logger.warning("CORS is configured to allow all origins – set FRONTEND_ORIGIN for stricter policy.")
 else:
-    allow_origins = default_dev_origins + azure_origins
+    allow_origins = default_dev_origins
     allow_origin_regex = r"https://.*\.azurecontainerapps\.io"
     logger.info(f"CORS configured for development origins: {default_dev_origins}")
-    logger.info(f"CORS configured for Azure origins: {azure_origins}")
     logger.info(f"CORS configured with regex pattern: {allow_origin_regex}")
 
 app.add_middleware(

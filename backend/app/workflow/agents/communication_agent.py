@@ -1,6 +1,6 @@
 """Communication Agent factory."""
-from agent_framework import ChatAgent
-from agent_framework.azure import AzureOpenAIChatClient
+from agent_framework import Agent
+from agent_framework.openai import OpenAIChatClient
 
 
 COMMUNICATION_AGENT_PROMPT = """You are a communication specialist responsible for drafting clear, professional emails to insurance customers.
@@ -26,17 +26,17 @@ Your response will be automatically parsed into a structured format. Provide:
 - requested_items: A list of specific items/documents requested from the customer (can be empty if no specific items needed)"""
 
 
-def create_communication_agent(chat_client: AzureOpenAIChatClient) -> ChatAgent:  # noqa: D401
+def create_communication_agent(chat_client: OpenAIChatClient) -> Agent:  # noqa: D401
     """Return a configured Communication Agent.
 
     Args:
-        chat_client: An instantiated AzureOpenAIChatClient shared by the app.
+        chat_client: An instantiated OpenAIChatClient shared by the app.
     
     Returns:
-        ChatAgent: Configured communication agent.
+        Agent: Configured communication agent.
     """
-    return ChatAgent(
-        chat_client=chat_client,
+    return Agent(
+        client=chat_client,
         name="communication_agent",
         instructions=COMMUNICATION_AGENT_PROMPT,
         tools=[],  # email generation only needs language model

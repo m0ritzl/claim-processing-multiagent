@@ -22,7 +22,7 @@
 
 - [x] T001 Update dependencies in backend/pyproject.toml - remove LangGraph packages, add agent-framework and azure-identity
 - [x] T002 [P] Run `uv sync` to install new dependencies and verify installation
-- [x] T003 [P] Create backend/app/workflow/client.py with `build_chat_client()` factory for AzureOpenAIChatClient
+- [x] T003 [P] Create backend/app/workflow/client.py with `build_chat_client()` factory for OpenAIChatClient
 
 ---
 
@@ -51,10 +51,10 @@
 
 ### Agent Factory Migration (US1)
 
-- [x] T010 [P] [US1] Migrate claim_assessor factory to ChatAgent pattern in backend/app/workflow/agents/claim_assessor.py
-- [x] T011 [P] [US1] Migrate policy_checker factory to ChatAgent pattern in backend/app/workflow/agents/policy_checker.py
-- [x] T012 [P] [US1] Migrate risk_analyst factory to ChatAgent pattern in backend/app/workflow/agents/risk_analyst.py
-- [x] T013 [P] [US1] Migrate communication_agent factory to ChatAgent pattern in backend/app/workflow/agents/communication_agent.py
+- [x] T010 [P] [US1] Migrate claim_assessor factory to Agent pattern in backend/app/workflow/agents/claim_assessor.py
+- [x] T011 [P] [US1] Migrate policy_checker factory to Agent pattern in backend/app/workflow/agents/policy_checker.py
+- [x] T012 [P] [US1] Migrate risk_analyst factory to Agent pattern in backend/app/workflow/agents/risk_analyst.py
+- [x] T013 [P] [US1] Migrate communication_agent factory to Agent pattern in backend/app/workflow/agents/communication_agent.py
 
 ### Supervisor & Workflow Migration (US1)
 
@@ -87,7 +87,7 @@
 
 ### Single Agent Service (US2)
 
-- [x] T024 [US2] Update `invoke_single_agent()` in backend/app/services/single_agent.py to use ChatAgent
+- [x] T024 [US2] Update `invoke_single_agent()` in backend/app/services/single_agent.py to use Agent
 - [x] T025 [US2] Preserve response format (conversation_chronological) in single_agent.py
 
 ### Agent Endpoint Validation (US2)

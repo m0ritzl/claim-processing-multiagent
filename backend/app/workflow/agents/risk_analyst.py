@@ -1,6 +1,6 @@
 """Risk Analyst agent factory."""
-from agent_framework import ChatAgent
-from agent_framework.azure import AzureOpenAIChatClient
+from agent_framework import Agent
+from agent_framework.openai import OpenAIChatClient
 
 from ..tools import get_claimant_history
 
@@ -25,17 +25,17 @@ Your response will be automatically parsed into a structured format. Provide:
 - analysis: Your detailed risk analysis explanation"""
 
 
-def create_risk_analyst_agent(chat_client: AzureOpenAIChatClient) -> ChatAgent:  # noqa: D401
+def create_risk_analyst_agent(chat_client: OpenAIChatClient) -> Agent:  # noqa: D401
     """Return a configured Risk Analyst agent.
 
     Args:
-        chat_client: An instantiated AzureOpenAIChatClient shared by the app.
+        chat_client: An instantiated OpenAIChatClient shared by the app.
     
     Returns:
-        ChatAgent: Configured risk analyst agent.
+        Agent: Configured risk analyst agent.
     """
-    return ChatAgent(
-        chat_client=chat_client,
+    return Agent(
+        client=chat_client,
         name="risk_analyst",
         instructions=RISK_ANALYST_PROMPT,
         tools=[get_claimant_history],

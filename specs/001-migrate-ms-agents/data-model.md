@@ -11,7 +11,7 @@ This document defines the data structures used in the migrated orchestration lay
 
 ## Agent Definitions
 
-### ChatAgent Configuration
+### Agent Configuration
 
 Each specialist agent is defined with the following structure:
 

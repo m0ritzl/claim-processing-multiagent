@@ -9,13 +9,13 @@ Microsoft Agent Framework (`agent-framework` package) provides full equivalent f
 
 | Capability | LangGraph | Microsoft Agent Framework |
 |------------|-----------|---------------------------|
-| Agent creation | `create_react_agent(model, tools, prompt)` | `ChatAgent(chat_client, instructions, tools)` |
+| Agent creation | `create_react_agent(model, tools, prompt)` | `Agent(client, instructions, tools)` |
 | Tool binding | `@tool` decorator | Plain Python functions or `@ai_function` decorator |
-| Azure OpenAI | `AzureChatOpenAI` (LangChain) | `AzureOpenAIChatClient` (native) |
+| Azure OpenAI | `AzureChatOpenAI` (LangChain) | `OpenAIChatClient` configured for Azure OpenAI |
 | Supervisor/orchestration | `create_supervisor()` | `SequentialBuilder` / `HandoffBuilder` workflows |
 | Streaming | `graph.stream()` | `agent.run_stream()` / workflow streaming |
 
-**Decision**: Proceed with migration using `AzureOpenAIChatClient` for agents and `SequentialBuilder` workflow for supervisor orchestration.
+**Decision**: Proceed with migration using `OpenAIChatClient` for agents and `SequentialBuilder` workflow for supervisor orchestration.
 
 ---
 
@@ -40,11 +40,11 @@ agent = create_react_agent(
 
 **Microsoft Agent Framework (target)**:
 ```python
-from agent_framework import ChatAgent
-from agent_framework.azure import AzureOpenAIChatClient
+from agent_framework import Agent
+from agent_framework.openai import OpenAIChatClient
 
-agent = ChatAgent(
-    chat_client=AzureOpenAIChatClient(credential=AzureCliCredential()),
+agent = Agent(
+    client=OpenAIChatClient(azure_endpoint=endpoint, credential=credential),
     instructions="You are a claim assessor...",
     name="claim_assessor",
     tools=[get_vehicle_details, analyze_image]
@@ -53,7 +53,7 @@ agent = ChatAgent(
 
 **Or using the fluent `as_agent()` pattern**:
 ```python
-agent = AzureOpenAIChatClient(credential=AzureCliCredential()).as_agent(
+agent = OpenAIChatClient(azure_endpoint=endpoint, credential=credential).as_agent(
     name="claim_assessor",
     instructions="You are a claim assessor...",
     tools=[get_vehicle_details, analyze_image]
@@ -61,9 +61,9 @@ agent = AzureOpenAIChatClient(credential=AzureCliCredential()).as_agent(
 ```
 
 ### Decision
-Use `ChatAgent` with `AzureOpenAIChatClient` for explicit configuration control, matching the current explicit LLM setup pattern.
+Use `Agent` with `OpenAIChatClient` for explicit configuration control, matching the current explicit LLM setup pattern.
 
-**Rationale**: The explicit `ChatAgent` constructor provides clearer separation between client configuration and agent definition, aligning with Constitution Principle II (Separation of Agent and Orchestration).
+**Rationale**: The explicit `Agent` constructor provides clearer separation between client configuration and agent definition, aligning with Constitution Principle II (Separation of Agent and Orchestration).
 
 ---
 
@@ -187,16 +187,16 @@ Use **SequentialBuilder** with a **synthesizer agent at the end** to produce the
 
 **Implementation Pattern**:
 ```python
-from agent_framework import ChatAgent
-from agent_framework.azure import AzureOpenAIChatClient
+from agent_framework import Agent
+from agent_framework.openai import OpenAIChatClient
 from agent_framework.workflows import SequentialBuilder
 
 # Create specialist agents
-claim_assessor = ChatAgent(chat_client=client, name="claim_assessor", ...)
-policy_checker = ChatAgent(chat_client=client, name="policy_checker", ...)
-risk_analyst = ChatAgent(chat_client=client, name="risk_analyst", ...)
-communication_agent = ChatAgent(chat_client=client, name="communication_agent", ...)
-synthesizer = ChatAgent(chat_client=client, name="synthesizer", instructions=SUPERVISOR_PROMPT)
+claim_assessor = Agent(client=client, name="claim_assessor", ...)
+policy_checker = Agent(client=client, name="policy_checker", ...)
+risk_analyst = Agent(client=client, name="risk_analyst", ...)
+communication_agent = Agent(client=client, name="communication_agent", ...)
+synthesizer = Agent(client=client, name="synthesizer", instructions=SUPERVISOR_PROMPT)
 
 # Build sequential workflow
 workflow = (
@@ -228,8 +228,8 @@ from langchain_openai import AzureChatOpenAI
 
 llm = AzureChatOpenAI(
     azure_deployment=deployment,
-    api_key=api_key,
     azure_endpoint=endpoint,
+    azure_ad_token_provider=token_provider,
     api_version="2024-08-01-preview",
     temperature=0.1,
 )
@@ -237,43 +237,45 @@ llm = AzureChatOpenAI(
 
 **Microsoft Agent Framework setup**:
 ```python
-from agent_framework.azure import AzureOpenAIChatClient
-from azure.identity import AzureCliCredential
+from agent_framework.openai import OpenAIChatClient
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
 # Option 1: Environment variables (AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_CHAT_DEPLOYMENT_NAME)
-client = AzureOpenAIChatClient(credential=AzureCliCredential())
+token_provider = get_bearer_token_provider(
+    DefaultAzureCredential(),
+    "https://cognitiveservices.azure.com/.default",
+)
+client = OpenAIChatClient(credential=token_provider)
 
 # Option 2: Explicit configuration
-client = AzureOpenAIChatClient(
-    endpoint="https://your-resource.openai.azure.com/",
-    deployment_name="gpt-4.1",
-    credential=AzureCliCredential(),  # Or api_key="..."
+client = OpenAIChatClient(
+    azure_endpoint="https://your-resource.openai.azure.com/",
+    model="gpt-5.3-chat",
+    credential=token_provider,
 )
 ```
 
 ### Decision
-Use explicit configuration to match current settings pattern, supporting both credential-based auth and API key auth.
+Use explicit configuration to match current settings pattern, supporting only Microsoft Entra ID credential-based auth.
 
 **Implementation**:
 ```python
-from agent_framework.azure import AzureOpenAIChatClient
-from azure.identity import AzureCliCredential
+from agent_framework.openai import OpenAIChatClient
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from app.core.config import get_settings
 
-def build_chat_client() -> AzureOpenAIChatClient:
+def build_chat_client() -> OpenAIChatClient:
     settings = get_settings()
+    token_provider = get_bearer_token_provider(
+        DefaultAzureCredential(),
+        "https://cognitiveservices.azure.com/.default",
+    )
     
-    # Support both API key and credential auth
-    auth_kwargs = {}
-    if settings.azure_openai_api_key:
-        auth_kwargs["api_key"] = settings.azure_openai_api_key
-    else:
-        auth_kwargs["credential"] = AzureCliCredential()
-    
-    return AzureOpenAIChatClient(
-        endpoint=settings.azure_openai_endpoint,
-        deployment_name=settings.azure_openai_deployment_name or "gpt-4o",
-        **auth_kwargs
+    return OpenAIChatClient(
+        azure_endpoint=settings.azure_openai_endpoint,
+        model=settings.azure_openai_deployment_name or "gpt-5.3-chat",
+        api_version=settings.azure_openai_api_version,
+        credential=token_provider,
     )
 ```
 
@@ -377,9 +379,9 @@ Replace LangGraph dependencies with `agent-framework` package. Keep all non-orch
 
 | Area | Decision | Rationale |
 |------|----------|-----------|
-| Agent creation | `ChatAgent` with `AzureOpenAIChatClient` | Explicit control, framework-agnostic agent definitions |
+| Agent creation | `Agent` with `OpenAIChatClient` | Explicit control, framework-agnostic agent definitions |
 | Tool binding | Plain functions with `Annotated` types | Removes LangChain dependency, cleaner code |
 | Orchestration | `SequentialBuilder` workflow | Matches current sequential pattern |
-| Azure OpenAI | Explicit configuration with API key support | Compatibility with current settings |
+| Azure OpenAI | Explicit configuration with DefaultAzureCredential support | Managed identity in Azure and `az login` locally |
 | Streaming | Workflow events transformed to chunks | Maintains frontend compatibility |
 | Dependencies | Replace LangGraph with `agent-framework` | Clean migration, native Azure support |

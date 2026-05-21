@@ -1,6 +1,6 @@
 """Claim Assessor agent factory."""
-from agent_framework import ChatAgent
-from agent_framework.azure import AzureOpenAIChatClient
+from agent_framework import Agent
+from agent_framework.openai import OpenAIChatClient
 
 from ..tools import get_vehicle_details, analyze_image
 
@@ -31,17 +31,17 @@ Your response will be automatically parsed into a structured format. Provide:
 Provide detailed assessments with specific cost justifications that incorporate vehicle details and insights derived from images."""
 
 
-def create_claim_assessor_agent(chat_client: AzureOpenAIChatClient) -> ChatAgent:  # noqa: D401
+def create_claim_assessor_agent(chat_client: OpenAIChatClient) -> Agent:  # noqa: D401
     """Return a configured Claim Assessor agent.
 
     Args:
-        chat_client: An instantiated AzureOpenAIChatClient shared by the app.
+        chat_client: An instantiated OpenAIChatClient shared by the app.
     
     Returns:
-        ChatAgent: Configured claim assessor agent.
+        Agent: Configured claim assessor agent.
     """
-    return ChatAgent(
-        chat_client=chat_client,
+    return Agent(
+        client=chat_client,
         name="claim_assessor",
         instructions=CLAIM_ASSESSOR_PROMPT,
         tools=[get_vehicle_details, analyze_image],

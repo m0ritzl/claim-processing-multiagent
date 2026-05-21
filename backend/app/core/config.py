@@ -16,6 +16,12 @@ except ImportError:
     from pydantic import BaseSettings, Field
 
 
+DEFAULT_AZURE_OPENAI_DEPLOYMENT_NAME = "gpt-5.3-chat"
+DEFAULT_AZURE_OPENAI_EMBEDDING_MODEL = "text-embedding-3-large"
+DEFAULT_AZURE_OPENAI_API_VERSION = "preview"
+DEFAULT_AZURE_OPENAI_DEPLOYMENTS_API_VERSION = "2024-10-21"
+
+
 class Settings(BaseSettings):  # noqa: D101
     # PostgreSQL
     database_url: str = Field(alias="DATABASE_URL")
@@ -23,13 +29,25 @@ class Settings(BaseSettings):  # noqa: D101
     database_max_overflow: int = Field(default=10, alias="DATABASE_MAX_OVERFLOW")
     test_database_url: str | None = Field(default=None, alias="TEST_DATABASE_URL")
 
-    # Azure OpenAI (auth via DefaultAzureCredential — no API key needed)
+    # Azure OpenAI (auth via DefaultAzureCredential)
     azure_openai_endpoint: str | None = Field(
         default=None, alias="AZURE_OPENAI_ENDPOINT")
     azure_openai_deployment_name: str | None = Field(
-        default="gpt-4o", alias="AZURE_OPENAI_DEPLOYMENT_NAME")
+        default=DEFAULT_AZURE_OPENAI_DEPLOYMENT_NAME,
+        alias="AZURE_OPENAI_DEPLOYMENT_NAME",
+    )
     azure_openai_embedding_model: str | None = Field(
-        default="text-embedding-ada-002", alias="AZURE_OPENAI_EMBEDDING_MODEL")
+        default=DEFAULT_AZURE_OPENAI_EMBEDDING_MODEL,
+        alias="AZURE_OPENAI_EMBEDDING_MODEL",
+    )
+    azure_openai_api_version: str = Field(
+        default=DEFAULT_AZURE_OPENAI_API_VERSION,
+        alias="AZURE_OPENAI_API_VERSION",
+    )
+    azure_openai_deployments_api_version: str = Field(
+        default=DEFAULT_AZURE_OPENAI_DEPLOYMENTS_API_VERSION,
+        alias="AZURE_OPENAI_DEPLOYMENTS_API_VERSION",
+    )
 
     # Frontend (used to fetch demo evidence images for AI vision analysis)
     frontend_origin: str | None = Field(

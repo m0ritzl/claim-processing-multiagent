@@ -8,10 +8,10 @@ param location string
 param tags object = {}
 
 @description('Chat model deployment name')
-param chatModelName string = 'gpt-4o'
+param chatModelName string = 'gpt-5.3-chat'
 
 @description('Chat model version')
-param chatModelVersion string = '2024-11-20'
+param chatModelVersion string = '2026-03-03'
 
 @description('Chat model capacity (thousands of tokens per minute)')
 param chatModelCapacity int = 30
@@ -47,7 +47,7 @@ resource chatDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-1
   parent: account
   name: chatModelName
   sku: {
-    name: 'Standard'
+    name: 'GlobalStandard'
     capacity: chatModelCapacity
   }
   properties: {
@@ -63,7 +63,7 @@ resource embeddingDeployment 'Microsoft.CognitiveServices/accounts/deployments@2
   parent: account
   name: embeddingModelName
   sku: {
-    name: 'Standard'
+    name: 'GlobalStandard'
     capacity: embeddingModelCapacity
   }
   properties: {

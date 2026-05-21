@@ -1,10 +1,10 @@
 # Frontend - Insurance Claims Workbench
 
-Next.js 15 frontend application built with shadcn/ui components for the multi-agent insurance claims processing system.
+Next.js 16 frontend application built with shadcn/ui components for the multi-agent insurance claims processing system.
 
 ## Features
 
-- **Next.js 15** with App Router
+- **Next.js 16** with App Router
 - **React 19** with latest features
 - **shadcn/ui** components for beautiful UI
 - **Tailwind CSS v4** for styling
@@ -14,7 +14,7 @@ Next.js 15 frontend application built with shadcn/ui components for the multi-ag
 
 ```bash
 cd frontend
-npm install --legacy-peer-deps
+npm install
 npm run dev
 ```
 
@@ -24,13 +24,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### React 19 Compatibility
 
-If you encounter peer dependency errors, use the legacy peer deps flag:
-
-```bash
-npm install --legacy-peer-deps
-```
-
-This is due to some packages not yet supporting React 19.
+The dependency set has been upgraded for React 19 and Next.js 16. Use the checked-in lockfile with `npm install`.
 
 ## Environment Variables
 

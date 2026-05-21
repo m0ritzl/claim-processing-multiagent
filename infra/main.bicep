@@ -16,10 +16,13 @@ param frontendContainerImage string = 'mcr.microsoft.com/azuredocs/containerapps
 param projectName string = 'shadcn-fastapi'
 
 @description('Azure OpenAI deployment name')
-param azureOpenAIDeploymentName string = 'gpt-4o'
+param azureOpenAIDeploymentName string = 'gpt-5.3-chat'
 
 @description('Azure OpenAI API version')
-param azureOpenAIApiVersion string = '2025-04-01-preview'
+param azureOpenAIApiVersion string = 'preview'
+
+@description('Azure OpenAI deployments API version for chat completions and embeddings')
+param azureOpenAIDeploymentsApiVersion string = '2024-10-21'
 
 @description('Azure OpenAI embedding model')
 param azureOpenAIEmbeddingModel string = 'text-embedding-3-large'
@@ -160,6 +163,10 @@ module backendContainerApp 'modules/containerapp.bicep' = {
         value: azureOpenAIApiVersion
       }
       {
+        name: 'AZURE_OPENAI_DEPLOYMENTS_API_VERSION'
+        value: azureOpenAIDeploymentsApiVersion
+      }
+      {
         name: 'AZURE_OPENAI_EMBEDDING_MODEL'
         value: azureOpenAIEmbeddingModel
       }
@@ -175,7 +182,7 @@ module backendContainerApp 'modules/containerapp.bicep' = {
     secrets: [
       {
         name: 'database-url'
-        value: 'postgresql+asyncpg://${postgresAdminLogin}:${postgresAdminPassword}@${network.outputs.privateDnsZoneName}:5432/${postgresDbName}?ssl=require'
+        value: 'postgresql+asyncpg://${postgresAdminLogin}:${postgresAdminPassword}@${postgresFlexibleServer.outputs.serverFqdn}:5432/${postgresDbName}?ssl=require'
       }
     ]
   }

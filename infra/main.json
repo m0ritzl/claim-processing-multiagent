@@ -45,16 +45,23 @@
     },
     "azureOpenAIDeploymentName": {
       "type": "string",
-      "defaultValue": "gpt-4o",
+      "defaultValue": "gpt-5.3-chat",
       "metadata": {
         "description": "Azure OpenAI deployment name"
       }
     },
     "azureOpenAIApiVersion": {
       "type": "string",
-      "defaultValue": "2025-04-01-preview",
+      "defaultValue": "preview",
       "metadata": {
         "description": "Azure OpenAI API version"
+      }
+    },
+    "azureOpenAIDeploymentsApiVersion": {
+      "type": "string",
+      "defaultValue": "2024-10-21",
+      "metadata": {
+        "description": "Azure OpenAI deployments API version for chat completions and embeddings"
       }
     },
     "azureOpenAIEmbeddingModel": {
@@ -633,7 +640,7 @@
           "outputs": {
             "serverFqdn": {
               "type": "string",
-              "value": "[format('{0}.postgres.database.azure.com', parameters('serverName'))]"
+              "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('serverName')), '2024-08-01').fullyQualifiedDomainName]"
             },
             "serverId": {
               "type": "string",
@@ -782,7 +789,7 @@
             },
             "chatModelName": {
               "type": "string",
-              "defaultValue": "gpt-4o",
+              "defaultValue": "gpt-5.3-chat",
               "metadata": {
                 "description": "Chat model deployment name"
               }
@@ -852,7 +859,7 @@
               "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('accountName'), parameters('chatModelName'))]",
               "sku": {
-                "name": "Standard",
+                "name": "GlobalStandard",
                 "capacity": "[parameters('chatModelCapacity')]"
               },
               "properties": {
@@ -871,7 +878,7 @@
               "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('accountName'), parameters('embeddingModelName'))]",
               "sku": {
-                "name": "Standard",
+                "name": "GlobalStandard",
                 "capacity": "[parameters('embeddingModelCapacity')]"
               },
               "properties": {
@@ -979,6 +986,10 @@
                 "value": "[parameters('azureOpenAIApiVersion')]"
               },
               {
+                "name": "AZURE_OPENAI_DEPLOYMENTS_API_VERSION",
+                "value": "[parameters('azureOpenAIDeploymentsApiVersion')]"
+              },
+              {
                 "name": "AZURE_OPENAI_EMBEDDING_MODEL",
                 "value": "[parameters('azureOpenAIEmbeddingModel')]"
               },
@@ -996,7 +1007,7 @@
             "value": [
               {
                 "name": "database-url",
-                "value": "[format('postgresql+asyncpg://{0}:{1}@{2}:5432/{3}?ssl=require', parameters('postgresAdminLogin'), parameters('postgresAdminPassword'), reference(resourceId('Microsoft.Resources/deployments', 'network'), '2022-09-01').outputs.privateDnsZoneName.value, parameters('postgresDbName'))]"
+                "value": "[format('postgresql+asyncpg://{0}:{1}@{2}:5432/{3}?ssl=require', parameters('postgresAdminLogin'), parameters('postgresAdminPassword'), reference(resourceId('Microsoft.Resources/deployments', 'postgres-flexible-server'), '2022-09-01').outputs.serverFqdn.value, parameters('postgresDbName'))]"
               }
             ]
           }
@@ -1164,7 +1175,8 @@
         "[resourceId('Microsoft.Resources/deployments', 'cognitive-services')]",
         "[resourceId('Microsoft.Resources/deployments', 'container-apps-stack')]",
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('managedIdentityName'))]",
-        "[resourceId('Microsoft.Resources/deployments', 'network')]"
+        "[resourceId('Microsoft.Resources/deployments', 'network')]",
+        "[resourceId('Microsoft.Resources/deployments', 'postgres-flexible-server')]"
       ]
     },
     {

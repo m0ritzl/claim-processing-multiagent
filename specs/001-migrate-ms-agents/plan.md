@@ -5,7 +5,7 @@
 
 ## Summary
 
-Migrate the multi-agent orchestration layer from LangGraph/LangGraph-Supervisor to Microsoft Agent Framework (`agent-framework` package) while preserving all external behavior: agent prompts, tools, API contracts, and assessment output format. The migration replaces the orchestration primitives (`create_react_agent`, `create_supervisor`) with Microsoft Agent Framework equivalents (`ChatAgent`, `AzureOpenAIChatClient`, workflow builders) using a sequential/handoff workflow pattern for the supervisor.
+Migrate the multi-agent orchestration layer from LangGraph/LangGraph-Supervisor to Microsoft Agent Framework (`agent-framework` package) while preserving all external behavior: agent prompts, tools, API contracts, and assessment output format. The migration replaces the orchestration primitives (`create_react_agent`, `create_supervisor`) with Microsoft Agent Framework equivalents (`Agent`, `OpenAIChatClient`, workflow builders) using a sequential/handoff workflow pattern for the supervisor.
 
 ## Technical Context
 
@@ -61,10 +61,10 @@ backend/
 │   │   ├── pdf_processor.py         # UNCHANGED: PDF processing
 │   │   └── agents/
 │   │       ├── __init__.py
-│   │       ├── claim_assessor.py    # MODIFIED: ChatAgent factory
-│   │       ├── policy_checker.py    # MODIFIED: ChatAgent factory
-│   │       ├── risk_analyst.py      # MODIFIED: ChatAgent factory
-│   │       └── communication_agent.py # MODIFIED: ChatAgent factory
+│   │       ├── claim_assessor.py    # MODIFIED: Agent factory
+│   │       ├── policy_checker.py    # MODIFIED: Agent factory
+│   │       ├── risk_analyst.py      # MODIFIED: Agent factory
+│   │       └── communication_agent.py # MODIFIED: Agent factory
 │   ├── api/v1/endpoints/
 │   │   ├── workflow.py              # UNCHANGED: API contract
 │   │   └── agent.py                 # UNCHANGED: API contract
@@ -86,7 +86,7 @@ frontend/
 
 | Principle | Status | Post-Design Notes |
 |-----------|--------|-------------------|
-| I. LLM-Powered Multi-Agent Core | ✅ PASS | `ChatAgent` maintains LLM-powered agents; tool binding preserved; mock fallback supported via credential fallback pattern |
+| I. LLM-Powered Multi-Agent Core | ✅ PASS | `Agent` maintains LLM-powered agents; tool binding preserved; mock fallback supported via credential fallback pattern |
 | II. Separation of Agent and Orchestration | ✅ PASS | Migration explicitly decouples: agents defined as `AgentConfig`, orchestration via `SequentialBuilder` workflow—easily swappable |
 | III. API-First Design | ✅ PASS | Contracts documented in `contracts/`; no changes to request/response schemas |
 | IV. Modern UI/UX Standards | ✅ PASS | N/A for backend migration; frontend unchanged |

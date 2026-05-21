@@ -1,6 +1,6 @@
 """Policy Checker agent factory."""
-from agent_framework import ChatAgent
-from agent_framework.azure import AzureOpenAIChatClient
+from agent_framework import Agent
+from agent_framework.openai import OpenAIChatClient
 
 from ..tools import get_policy_details, search_policy_documents
 
@@ -50,17 +50,17 @@ RULES
 • Be concise yet complete."""
 
 
-def create_policy_checker_agent(chat_client: AzureOpenAIChatClient) -> ChatAgent:  # noqa: D401
+def create_policy_checker_agent(chat_client: OpenAIChatClient) -> Agent:  # noqa: D401
     """Return a configured Policy Checker agent.
 
     Args:
-        chat_client: An instantiated AzureOpenAIChatClient shared by the app.
+        chat_client: An instantiated OpenAIChatClient shared by the app.
     
     Returns:
-        ChatAgent: Configured policy checker agent.
+        Agent: Configured policy checker agent.
     """
-    return ChatAgent(
-        chat_client=chat_client,
+    return Agent(
+        client=chat_client,
         name="policy_checker",
         instructions=POLICY_CHECKER_PROMPT,
         tools=[get_policy_details, search_policy_documents],

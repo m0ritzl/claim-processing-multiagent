@@ -170,7 +170,7 @@ async def _run_agent(
     """Run a single agent and return its response.
     
     Args:
-        agent: The ChatAgent instance to run.
+        agent: The Agent instance to run.
         agent_name: Name of the agent for logging.
         messages: Current conversation history.
         context: Workflow context for tracking.

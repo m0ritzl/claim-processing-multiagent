@@ -12,13 +12,13 @@ Enable demo presenters to generate localized, culturally-appropriate insurance c
 ## Technical Context
 
 **Language/Version**: Python 3.12 (backend), TypeScript/Next.js 15 (frontend)  
-**Primary Dependencies**: FastAPI, Azure OpenAI (GPT-4o), shadcn/ui, Pydantic  
+**Primary Dependencies**: FastAPI, Azure OpenAI (gpt-5.3-chat), shadcn/ui, Pydantic
 **Storage**: SQLite (new, for saved scenarios) + existing FAISS (policy vectors)  
 **Testing**: pytest (backend), component tests (frontend)  
 **Target Platform**: Azure Container Apps (web application)
 **Project Type**: web (frontend + backend)  
 **Performance Goals**: Scenario generation <10 seconds, workflow processing unchanged  
-**Constraints**: Backend API key security, existing workflow unmodified  
+**Constraints**: Managed identity / DefaultAzureCredential auth, existing workflow unmodified
 **Scale/Scope**: 8 supported locales, 5 claim types, 3 complexity levels, 20+ saved scenarios
 
 ## Constitution Check
@@ -39,7 +39,7 @@ Enable demo presenters to generate localized, culturally-appropriate insurance c
 
 | Principle | Status | Design Artifact | Verification |
 |-----------|--------|-----------------|--------------|
-| **I. LLM-Powered Multi-Agent Core** | ✅ PASS | [research.md](research.md) §1 | GPT-4o JSON mode for structured generation |
+| **I. LLM-Powered Multi-Agent Core** | ✅ PASS | [research.md](research.md) §1 | gpt-5.3-chat JSON mode for structured generation |
 | **II. Separation of Agent and Orchestration** | ✅ PASS | [data-model.md](data-model.md) | ScenarioGenerator service independent from workflow |
 | **III. API-First Design** | ✅ PASS | [contracts/scenarios-api.yaml](contracts/scenarios-api.yaml) | Full OpenAPI 3.1 spec with typed schemas |
 | **IV. Modern UI/UX Standards** | ✅ PASS | [research.md](research.md) §5 | shadcn/ui Dialog, tabs, dropdowns |

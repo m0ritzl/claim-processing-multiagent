@@ -16,7 +16,7 @@ from openai import AzureOpenAI
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from pydantic import ValidationError
 
-from app.core.config import get_settings
+from app.core.config import DEFAULT_AZURE_OPENAI_DEPLOYMENT_NAME, get_settings
 from app.models.scenario import (
     ClaimType,
     Complexity,
@@ -34,6 +34,8 @@ from app.models.scenario import (
 )
 
 logger = logging.getLogger(__name__)
+
+SCENARIO_MAX_COMPLETION_TOKENS = 2000
 
 # Locale configuration for prompt building
 LOCALE_CONFIG = {
@@ -389,10 +391,10 @@ class ScenarioGenerator:
             )
             self.client = AzureOpenAI(
                 azure_ad_token_provider=token_provider,
-                api_version="2024-08-01-preview",
+                api_version=settings.azure_openai_deployments_api_version,
                 azure_endpoint=settings.azure_openai_endpoint,
             )
-            self.deployment = settings.azure_openai_deployment_name or "gpt-4o"
+            self.deployment = settings.azure_openai_deployment_name or DEFAULT_AZURE_OPENAI_DEPLOYMENT_NAME
 
     async def generate(
         self,
@@ -489,8 +491,7 @@ class ScenarioGenerator:
                         {"role": "user", "content": prompt},
                     ],
                     response_format=ScenarioGenerationOutput,
-                    temperature=0.8,
-                    max_tokens=2000,
+                    max_completion_tokens=SCENARIO_MAX_COMPLETION_TOKENS,
                 )
 
                 # Get the parsed Pydantic model directly

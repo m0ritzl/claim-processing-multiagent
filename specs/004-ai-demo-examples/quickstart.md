@@ -130,9 +130,9 @@ npm run dev
 ### Environment Variables
 
 No new environment variables required. Uses existing:
-- `AZURE_OPENAI_API_KEY`
 - `AZURE_OPENAI_ENDPOINT`
 - `AZURE_OPENAI_DEPLOYMENT_NAME`
+- `AZURE_OPENAI_API_VERSION`
 
 ## Database
 
@@ -144,7 +144,7 @@ To reset: `rm backend/app/db/scenarios.db`
 
 ### Generation fails with timeout
 - Check Azure OpenAI connectivity
-- Verify API key is valid
+- Verify `az login` is active locally or managed identity is configured in Azure
 - Try simpler complexity level
 
 ### Generated scenario fails workflow

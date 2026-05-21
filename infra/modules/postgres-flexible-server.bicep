@@ -67,6 +67,6 @@ resource appDatabase 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2024-0
   }
 }
 
-output serverFqdn string = '${serverName}.postgres.database.azure.com'
+output serverFqdn string = postgresServer.properties.fullyQualifiedDomainName
 output serverId string = postgresServer.id
 output databaseName string = appDatabase.name

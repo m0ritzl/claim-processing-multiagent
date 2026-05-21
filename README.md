@@ -1,6 +1,6 @@
 # Contoso Claims - Multi-Agent Insurance Claims Platform
 
-An **Agentic AI Claims Demo** powered by advanced multi-agent systems leveraging **Langgraph** and **Azure OpenAI (GPT-4.1)**, designed to streamline and enhance the end-to-end insurance claims process. This proof-of-concept showcases a cutting-edge architecture in which specialized AI agents collaboratively assess claims, delivering instant, transparent, and explainable recommendations directly to claims processors. By augmenting human decision-making, the solution significantly accelerates claim handling—reducing processing time from hours to minutes—while enhancing consistency, transparency, and customer satisfaction.
+An **Agentic AI Claims Demo** powered by advanced multi-agent systems leveraging **Microsoft Agent Framework** and **Azure OpenAI (gpt-5.3-chat)**, designed to streamline and enhance the end-to-end insurance claims process. This proof-of-concept showcases a cutting-edge architecture in which specialized AI agents collaboratively assess claims, delivering instant, transparent, and explainable recommendations directly to claims processors. By augmenting human decision-making, the solution significantly accelerates claim handling—reducing processing time from hours to minutes—while enhancing consistency, transparency, and customer satisfaction.
 
 ## 🎯 What This Demo Showcases
 
@@ -42,8 +42,8 @@ Unlike traditional single-model AI systems, Contoso Claims employs a **collabora
 ## 🏗️ Architecture
 
 ### Technology Stack
-- **Multi-Agent Framework**: LangGraph with supervisor pattern
-- **AI Provider**: Azure OpenAI (GPT-4o, GPT-4.1) 
+- **Multi-Agent Framework**: Microsoft Agent Framework with supervisor pattern
+- **AI Provider**: Azure OpenAI (`gpt-5.3-chat`) using Microsoft Entra ID authentication
 - **Backend**: FastAPI
 - **Frontend**: Next.js 15 with React 19 and shadcn/ui
 - **Search**: FAISS vector database for policy retrieval (to be replaced with Azure AI Search in Prod Environments)
@@ -92,12 +92,14 @@ DATABASE_URL=postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/claims_app
 TEST_DATABASE_URL=postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/claims_app_test
 DATABASE_POOL_SIZE=5
 DATABASE_MAX_OVERFLOW=10
-AZURE_OPENAI_API_KEY=your_api_key_here
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT_NAME=llm-deployment-name(ex. gpt-4.1)
-AZURE_OPENAI_EMBEDDING_MODEL=embedding-model-deployment-name
-AZURE_OPENAI_API_VERSION=2025-04-01-preview
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5.3-chat
+AZURE_OPENAI_EMBEDDING_MODEL=text-embedding-3-large
+AZURE_OPENAI_API_VERSION=preview
+AZURE_OPENAI_DEPLOYMENTS_API_VERSION=2024-10-21
 ```
+
+Run `az login` locally. In Azure, the Container Apps managed identity is granted the Cognitive Services OpenAI User role and local key-based auth is disabled on the Azure OpenAI account.
 
 ### Backend Setup
 ```bash
@@ -112,7 +114,7 @@ The API will be available at http://localhost:8000
 ### Frontend Setup
 ```bash
 cd frontend
-npm install --legacy-peer-deps
+npm install
 npm run dev
 ```
 The frontend will be available at http://localhost:3000
@@ -146,6 +148,14 @@ azd auth login
 # Initialize and deploy
 azd up
 ```
+
+If `azd up` finishes provisioning but fails with:
+
+```text
+extension azure.ai.agents project hook postdeploy failed: AZURE_AI_PROJECT_ENDPOINT is not set in the environment
+```
+
+the failure is from the optional preview `azure.ai.agents` azd extension, not this application. This repo deploys Azure OpenAI directly and does not provision a Foundry AI Project, so either temporarily uninstall that extension with `azd extension uninstall azure.ai.agents` before rerunning `azd up`, or set up a real Foundry project endpoint if you intentionally use that extension outside this app.
 
 This will:
 1. Create Azure Container Apps environment
@@ -214,6 +224,10 @@ simple-insurance-multi-agent/
 - **Confidence Scoring**: Quantitative assessment of decision certainty
 - **Audit Trails**: Complete log of agent interactions for compliance
 - **Human Intervention Points**: Clear override capabilities for human reviewers
+
+## 🙏 Attribution
+
+This project is based on the original [alisoliman/insurance-multi-agent](https://github.com/alisoliman/insurance-multi-agent) repository. Credit and thanks go to the original authors and contributors for the foundation of this multi-agent insurance claims demo.
 
 ## 📄 License
 

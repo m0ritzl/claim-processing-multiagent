@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable, Dict, List
 
-from agent_framework import ChatAgent
+from agent_framework import Agent
 
 from .client import get_chat_client
 from .agents.claim_assessor import create_claim_assessor_agent, CLAIM_ASSESSOR_PROMPT
@@ -70,7 +70,7 @@ AGENT_CONFIGS: Dict[str, AgentConfig] = {
 }
 
 
-def _compile_agents() -> Dict[str, ChatAgent]:
+def _compile_agents() -> Dict[str, Agent]:
     """Instantiate each specialist agent once using the shared chat client."""
     chat_client = get_chat_client()
     
@@ -84,10 +84,10 @@ def _compile_agents() -> Dict[str, ChatAgent]:
 
 
 # Lazy initialization of agents - only compiled when first accessed
-_AGENTS: Dict[str, ChatAgent] | None = None
+_AGENTS: Dict[str, Agent] | None = None
 
 
-def get_agents() -> Dict[str, ChatAgent]:
+def get_agents() -> Dict[str, Agent]:
     """Get the compiled agents dict (lazy initialization).
     
     This function provides lazy initialization of agents,
@@ -102,10 +102,10 @@ def get_agents() -> Dict[str, ChatAgent]:
 
 # For backward compatibility, AGENTS is now a property-like access
 # Code that imports AGENTS directly will still work but triggers lazy init
-class _AgentsProxy(Dict[str, ChatAgent]):
+class _AgentsProxy(Dict[str, Agent]):
     """Proxy dict that lazily initializes agents on first access."""
     
-    def __getitem__(self, key: str) -> ChatAgent:
+    def __getitem__(self, key: str) -> Agent:
         return get_agents()[key]
     
     def __contains__(self, key: object) -> bool:
@@ -127,4 +127,4 @@ class _AgentsProxy(Dict[str, ChatAgent]):
         return get_agents().get(key, default)
 
 
-AGENTS: Dict[str, ChatAgent] = _AgentsProxy()  # type: ignore
+AGENTS: Dict[str, Agent] = _AgentsProxy()  # type: ignore

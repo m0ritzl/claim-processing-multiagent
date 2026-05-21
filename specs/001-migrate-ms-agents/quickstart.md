@@ -7,8 +7,8 @@
 
 - Python 3.12+
 - [uv](https://github.com/astral-sh/uv) package manager
-- Azure OpenAI resource with a deployed model (e.g., gpt-4.1)
-- Azure CLI authenticated (`az login`) OR Azure OpenAI API key
+- Azure OpenAI resource with a deployed model (default: gpt-5.3-chat)
+- Azure CLI authenticated (`az login`) with access to the Azure OpenAI resource
 
 ## Environment Setup
 
@@ -33,12 +33,12 @@ Create or update `.env` in the `backend/` directory:
 ```env
 # Azure OpenAI Configuration
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4.1
-AZURE_OPENAI_API_KEY=your_api_key_here  # Optional if using az login
-AZURE_OPENAI_API_VERSION=2025-04-01-preview
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5.3-chat
+AZURE_OPENAI_API_VERSION=preview
+AZURE_OPENAI_DEPLOYMENTS_API_VERSION=2024-10-21
 
-# Optional: For Azure CLI credential auth
-# Leave AZURE_OPENAI_API_KEY empty and ensure `az login` is completed
+# Authentication uses DefaultAzureCredential.
+# Run `az login` locally; managed identity is used in Azure.
 ```
 
 ## Running the Backend
@@ -131,10 +131,10 @@ backend/
 │   ├── registry.py                     # Agent registration
 │   ├── tools.py                        # Tool signatures updated
 │   └── agents/
-│       ├── claim_assessor.py           # ChatAgent factory
-│       ├── policy_checker.py           # ChatAgent factory
-│       ├── risk_analyst.py             # ChatAgent factory
-│       └── communication_agent.py      # ChatAgent factory
+│       ├── claim_assessor.py           # Agent factory
+│       ├── policy_checker.py           # Agent factory
+│       ├── risk_analyst.py             # Agent factory
+│       └── communication_agent.py      # Agent factory
 └── app/services/
     └── single_agent.py                 # Single agent invocation
 ```
@@ -159,9 +159,7 @@ uv sync  # Re-sync dependencies
 
 ### "Azure OpenAI authentication failed"
 
-Either:
-- Set `AZURE_OPENAI_API_KEY` in `.env`
-- Or run `az login` and ensure the logged-in user has `Cognitive Services OpenAI User` role
+Run `az login` and ensure the logged-in user or managed identity has the `Cognitive Services OpenAI User` role.
 
 ### "Streaming not working"
 

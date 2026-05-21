@@ -10,10 +10,10 @@
 
 **Task**: Determine best approach for generating structured claim + policy data from AI
 
-**Decision**: Use Azure OpenAI GPT-4o with JSON mode and Pydantic response models
+**Decision**: Use Azure OpenAI gpt-5.3-chat with JSON mode and Pydantic response models
 
 **Rationale**:
-- GPT-4o already used by existing agents (no new dependency)
+- gpt-5.3-chat is the default chat deployment used by existing agents (no new dependency)
 - JSON mode ensures valid, parseable output
 - Pydantic models provide validation and type safety
 - Single API call can generate both claim and policy data

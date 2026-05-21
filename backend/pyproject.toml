@@ -5,29 +5,30 @@ description = "Hello World FastAPI app"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "alembic>=1.14.0",
-    "asyncpg>=0.30.0",
-    "fastapi[standard]>=0.112.1",
-    "uvicorn[standard]>=0.29.0",
-    "agent-framework-core>=1.0.0b260116",
-    "azure-identity>=1.15.0",
-    "openai>=1.0.0",
-    "python-dotenv>=1.1.0",
-    "faiss-cpu>=1.8.0",
-    "greenlet>=3.1.1",
-    "tiktoken>=0.8.0",
-    "pydantic-settings>=2.9.1",
-    "pymupdf>=1.26.1",
+    "alembic>=1.18.4",
+    "asyncpg>=0.31.0",
+    "fastapi[standard]>=0.136.1",
+    "uvicorn[standard]>=0.47.0",
+    "agent-framework-core>=1.5.0",
+    "azure-identity>=1.26.0b2",
+    "openai>=2.37.0",
+    "python-dotenv>=1.2.2",
+    "faiss-cpu>=1.13.2",
+    "greenlet>=3.5.1",
+    "tiktoken>=0.13.0",
+    "pydantic-settings>=2.14.1",
+    "pymupdf>=1.27.2.3",
     # Retained for vector search (embeddings) - not used for agent orchestration
-    "langchain-openai>=0.3.22",
-    "langchain-community>=0.3.0",
-    "sqlalchemy>=2.0.36",
+    "langchain-openai>=1.2.1",
+    "langchain-community>=0.4.1",
+    "sqlalchemy>=2.1.0b2",
+    "agent-framework-openai>=1.5.0",
 ]
 
 [dependency-groups]
 dev = [
-    "pytest>=8.0.0",
-    "pytest-asyncio>=0.23.0",
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.4.0a2",
 ]
 
 [tool.uv]

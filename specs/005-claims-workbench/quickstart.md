@@ -41,7 +41,7 @@ The API will be available at **http://localhost:8000**
 cd frontend
 
 # Install dependencies
-npm install --legacy-peer-deps
+npm install
 
 # Start the development server
 npm run dev
@@ -86,11 +86,11 @@ When the feature is implemented, 3 demo handlers will be seeded automatically:
 No new environment variables required for this feature. The existing Azure OpenAI configuration in `backend/.env` is used for AI processing:
 
 ```env
-AZURE_OPENAI_API_KEY=your_api_key
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4.1
-AZURE_OPENAI_EMBEDDING_MODEL=your-embedding-model
-AZURE_OPENAI_API_VERSION=2025-04-01-preview
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5.3-chat
+AZURE_OPENAI_EMBEDDING_MODEL=text-embedding-3-large
+AZURE_OPENAI_API_VERSION=preview
+AZURE_OPENAI_DEPLOYMENTS_API_VERSION=2024-10-21
 ```
 
 ## Development Workflow
@@ -250,7 +250,7 @@ uv run fastapi dev
 # Clear Next.js cache and reinstall
 cd frontend
 rm -rf .next node_modules
-npm install --legacy-peer-deps
+npm install
 npm run dev
 ```
 

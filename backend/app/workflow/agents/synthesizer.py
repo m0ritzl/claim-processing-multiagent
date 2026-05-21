@@ -3,8 +3,8 @@
 The synthesizer agent takes all specialist agent outputs and produces the
 final structured assessment that matches the expected API output format.
 """
-from agent_framework import ChatAgent
-from agent_framework.azure import AzureOpenAIChatClient
+from agent_framework import Agent
+from agent_framework.openai import OpenAIChatClient
 
 from app.models.agent_outputs import FinalAssessment
 
@@ -36,17 +36,17 @@ Your response will be automatically parsed into a structured format. Provide:
 This assessment empowers human decision-makers with comprehensive AI analysis while preserving human authority over final claim decisions."""
 
 
-def create_synthesizer_agent(chat_client: AzureOpenAIChatClient) -> ChatAgent:  # noqa: D401
+def create_synthesizer_agent(chat_client: OpenAIChatClient) -> Agent:  # noqa: D401
     """Return a configured Synthesizer agent for final assessment generation.
 
     Args:
-        chat_client: An instantiated AzureOpenAIChatClient shared by the app.
+        chat_client: An instantiated OpenAIChatClient shared by the app.
     
     Returns:
-        ChatAgent: Configured synthesizer agent.
+        Agent: Configured synthesizer agent.
     """
-    return ChatAgent(
-        chat_client=chat_client,
+    return Agent(
+        client=chat_client,
         name="synthesizer",
         instructions=SYNTHESIZER_PROMPT,
         tools=[],  # No tools needed - synthesis only uses conversation context

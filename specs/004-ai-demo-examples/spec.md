@@ -132,4 +132,4 @@ Frequent demo presenters want quick access to pre-configured regional templates 
 - A local database (e.g., SQLite or similar) will be used for persisting saved scenarios on the backend
 - Users have access to the backend API for scenario generation and storage
 - The existing workflow processing does not need modification - only the input claim data changes
-- Generation will happen on the backend to keep API keys secure and maintain consistent quality
+- Generation will happen on the backend to keep Azure OpenAI access controlled through managed identity and maintain consistent quality

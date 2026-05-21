@@ -17,6 +17,8 @@ import logging
 import json
 from functools import lru_cache
 
+from app.core.config import DEFAULT_AZURE_OPENAI_DEPLOYMENT_NAME, get_settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -484,13 +486,17 @@ def analyze_image(
         # ------------------------------------------------------------
         import openai  # lazy import to avoid mandatory dependency elsewhere
 
+        settings = get_settings()
         client = openai.AzureOpenAI(
-            azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+            azure_endpoint=settings.azure_openai_endpoint,
             azure_ad_token_provider=_get_openai_token_provider(),
-            api_version="2024-02-15-preview",
+            api_version=settings.azure_openai_deployments_api_version,
         )
 
-        deployment_name = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4o")
+        deployment_name = (
+            settings.azure_openai_deployment_name
+            or DEFAULT_AZURE_OPENAI_DEPLOYMENT_NAME
+        )
 
         system_prompt = (
             "You are an insurance image analyst. "
@@ -526,7 +532,6 @@ def analyze_image(
         response = client.chat.completions.create(
             model=deployment_name,
             messages=messages,
-            temperature=0,
             response_format={"type": "json_object"},
         )
 

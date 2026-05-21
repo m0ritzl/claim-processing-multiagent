@@ -52,7 +52,10 @@ class PolicyVectorSearch:  # noqa: D101
     # ------------------------------------------------------------------
     def _init_embeddings(self):
         try:
-            from app.core.config import get_settings
+            from app.core.config import (
+                DEFAULT_AZURE_OPENAI_EMBEDDING_MODEL,
+                get_settings,
+            )
             from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
             settings = get_settings()
@@ -62,10 +65,10 @@ class PolicyVectorSearch:  # noqa: D101
                 "https://cognitiveservices.azure.com/.default",
             )
             self.embeddings = AzureOpenAIEmbeddings(
-                model=settings.azure_openai_embedding_model or "text-embedding-ada-002",
+                model=settings.azure_openai_embedding_model or DEFAULT_AZURE_OPENAI_EMBEDDING_MODEL,
                 azure_endpoint=settings.azure_openai_endpoint,
                 azure_ad_token_provider=token_provider,
-                api_version="2024-02-01",
+                api_version=settings.azure_openai_deployments_api_version,
             )
             logger.info("Azure OpenAI embeddings initialized")
         except Exception as e:  # pragma: no cover

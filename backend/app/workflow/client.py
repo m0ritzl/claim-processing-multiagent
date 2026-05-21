@@ -1,6 +1,6 @@
 """Azure OpenAI chat client factory for Microsoft Agent Framework.
 
-Provides a centralized factory function to create AzureOpenAIChatClient
+Provides a centralized factory function to create OpenAIChatClient
 instances configured from application settings.  Authentication uses
 ``DefaultAzureCredential`` via a token provider that auto-refreshes.
 """
@@ -10,29 +10,29 @@ import logging
 from functools import lru_cache
 
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
-from agent_framework.azure import AzureOpenAIChatClient
+from agent_framework.openai import OpenAIChatClient
 
-from app.core.config import get_settings
+from app.core.config import DEFAULT_AZURE_OPENAI_DEPLOYMENT_NAME, get_settings
 
 logger = logging.getLogger(__name__)
 
 _AZURE_OPENAI_SCOPE = "https://cognitiveservices.azure.com/.default"
 
 
-def build_chat_client() -> AzureOpenAIChatClient:
-    """Build and return an AzureOpenAIChatClient instance.
+def build_chat_client() -> OpenAIChatClient:
+    """Build and return an OpenAIChatClient instance.
 
     Uses a token provider backed by ``DefaultAzureCredential`` so that
     tokens are automatically refreshed (managed identity in Azure,
     ``az login`` locally).
 
     Returns:
-        AzureOpenAIChatClient: Configured chat client for Azure OpenAI.
+        OpenAIChatClient: Configured chat client for Azure OpenAI.
     """
     settings = get_settings()
 
     endpoint = settings.azure_openai_endpoint
-    deployment = settings.azure_openai_deployment_name or "gpt-4o"
+    deployment = settings.azure_openai_deployment_name or DEFAULT_AZURE_OPENAI_DEPLOYMENT_NAME
 
     logger.info("✅ Building Azure OpenAI chat client")
     logger.info("   Endpoint: %s", endpoint or "Not set")
@@ -43,18 +43,19 @@ def build_chat_client() -> AzureOpenAIChatClient:
         DefaultAzureCredential(), _AZURE_OPENAI_SCOPE
     )
 
-    return AzureOpenAIChatClient(
-        endpoint=endpoint,
-        deployment_name=deployment,
-        ad_token_provider=token_provider,
+    return OpenAIChatClient(
+        model=deployment,
+        azure_endpoint=endpoint,
+        api_version=settings.azure_openai_api_version,
+        credential=token_provider,
     )
 
 
 @lru_cache(maxsize=1)
-def get_chat_client() -> AzureOpenAIChatClient:
-    """Get a cached AzureOpenAIChatClient instance (singleton).
+def get_chat_client() -> OpenAIChatClient:
+    """Get a cached OpenAIChatClient instance (singleton).
 
     Returns:
-        AzureOpenAIChatClient: Shared chat client instance.
+        OpenAIChatClient: Shared chat client instance.
     """
     return build_chat_client()
